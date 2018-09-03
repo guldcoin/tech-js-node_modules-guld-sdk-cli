@@ -50,7 +50,7 @@ program
 
 program
   .command('version [package-name]')
-  .description("Guld SDK semantic version manager for packages.")
+  .description('Guld SDK semantic version manager for packages.')
   .action(async (pname, options) => {
     if (pname) process.chdir(guldSDK.getPath(pname))
     else pname = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
@@ -61,7 +61,7 @@ program
     fs = fs || await getFS()
     var guser = await getName()
     var pkg = await guldSDK.readThenClose('package.json', 'json')
-    await fs.writeFile('README.md', await guldSDK.version(guser, pkg.name, ))
+    await fs.writeFile('README.md', await guldSDK.version(guser, pkg.name))
     console.log(`Created README.md for ${pname}`)
   })
 
