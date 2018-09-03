@@ -63,6 +63,7 @@ program
     fs = fs || await getFS()
     var guser = await getName()
     var pkg = await guldSDK.readThenClose('package.json', 'json')
+    console.log(pkg.name)
     await guldSDK.version(guser, pkg.name, vtype)
     var ver = (await guldSDK.readThenClose('package.json', 'json')).version
     console.log(`Updated version for ${options.name} to ${ver}.`)
