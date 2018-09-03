@@ -27,15 +27,16 @@ guld-sdk --help
 
   Options:
 
-    -V, --version           output the version number
-    -u --user <name>        The user name to run as.
-    -h, --help              output usage information
+    -V, --version              output the version number
+    -u --user <name>           The user name to run as.
+    -h, --help                 output usage information
 
   Commands:
 
-    init [options]          Create or update a JS package, including package.json, travis, webpack, and more config files.
-    readme [package-name]   Guld SDK readme generator. Uses package.json, .travis.yml, and pre-existing README.md files to generate guld-style README.md files like this project's
-    version [package-name]  Guld SDK semantic version manager for packages.
+    init [options]             Create or update a JS package, including package.json, travis, webpack, and more config files.
+    readme [options]           Guld SDK readme generator. Uses package.json, .travis.yml, and pre-existing README.md files to generate guld-style README.md files like this project's
+    version [options] [vtype]  Guld SDK semantic version manager for packages.
+    upgrade [options]          Upgrade dependencies for a package.
 
 ```
 
