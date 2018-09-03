@@ -15,19 +15,21 @@ program
     if (n) process.env.GULDNAME = global.GULDNAME = n
     return true
   })
-  .command('init [package-name]')
+program
+  .command('init')
   .description('Create or update a JS package, including package.json, travis, webpack, and more config files.')
-  .action(async (pname, options) => {
-    if (pname) process.chdir(guldSDK.getPath(pname))
-    else pname = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
-    if (pname === '') {
-      console.log(`Invalid package-name ${pname}`)
+  .option('-n --name <package-name>', 'The package name to operate on.')
+  .action(async (options) => {
+    if (options.name) process.chdir(guldSDK.getPath(options.name))
+    else options.name = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
+    if (options.name === '') {
+      console.log(`Invalid package-name ${options.name}`)
       process.exit(1)
     }
     fs = fs || await getFS()
     var guser = await getName()
-    await guldSDK.init(guser, pname)
-    console.log(`Initialized ${pname}`)
+    await guldSDK.init(guser, options.name)
+    console.log(`Initialized ${options.name}`)
   })
 
 program
@@ -43,6 +45,23 @@ program
     fs = fs || await getFS()
     var pkg = await guldSDK.readThenClose('package.json', 'json')
     await fs.writeFile('README.md', await guldSDK.genReadme(pkg))
+    console.log(`Created README.md for ${pname}`)
+  })
+
+program
+  .command('version [package-name]')
+  .description("Guld SDK semantic version manager for packages.")
+  .action(async (pname, options) => {
+    if (pname) process.chdir(guldSDK.getPath(pname))
+    else pname = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
+    if (pname === '') {
+      console.log(`Invalid package-name ${pname}`)
+      process.exit(1)
+    }
+    fs = fs || await getFS()
+    var guser = await getName()
+    var pkg = await guldSDK.readThenClose('package.json', 'json')
+    await fs.writeFile('README.md', await guldSDK.version(guser, pkg.name, ))
     console.log(`Created README.md for ${pname}`)
   })
 
