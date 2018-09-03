@@ -68,6 +68,21 @@ program
     console.log(`Updated version for ${options.name} to ${ver}.`)
   })
 
+program
+  .command('upgrade')
+  .description('Upgrade dependencies for a package.')
+  .option('-n --name <package-name>', 'The package name to operate on.')
+  .action(async (options) => {
+    if (options.name && typeof options.name === 'string') process.chdir(guldSDK.getPath(options.name))
+    else options.name = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
+    if (options.name === '') {
+      console.log(`Invalid package-name ${options.name}`)
+      process.exit(1)
+    }
+    await guldSDK.upgrade(options.name)
+    console.log(`Updated dependencies for ${options.name}.`)
+  })
+
 /* eslint-enable no-console */
 
 if (process.argv.length === 2) {
