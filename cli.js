@@ -4,6 +4,7 @@ const thispkg = require(`${__dirname}/package.json`)
 const { getFS } = require('guld-fs')
 const { getName } = require('guld-user')
 const guldSDK = require('guld-sdk')
+const runCLI = require('guld-cli-run')
 var fs
 
 /* eslint-disable no-console */
@@ -28,7 +29,7 @@ program
     }
     fs = fs || await getFS()
     var guser = await getName()
-    await guldSDK.init(guser, pkg.name)
+    await guldSDK.init(guser, pkg)
     console.log(`Initialized ${pkg.name}`)
   })
 
@@ -66,9 +67,9 @@ program
 
 program
   .command('publish')
-  .description('Publish a package to npm and the blocktree both.')
+  .description('Publish a package to both npm and the blocktree.')
   .option('-n --name <package-name>', 'The package name to operate on.')
-  .action(async (vtype, options) => {
+  .action(async (options) => {
     var pkg = typeof options.name === 'string' ? await guldSDK.gogetpkg({ name: options.name }) : await guldSDK.gogetpkg()
     if (pkg.name === '') {
       console.log(`Invalid package-name ${pkg.name}`)
@@ -95,10 +96,5 @@ program
   })
 
 /* eslint-enable no-console */
-
-if (process.argv.length === 2) {
-  program.help()
-} else if (process.argv.length > 2) {
-  program.parse(process.argv)
-}
+runCLI.bind(program)()
 module.exports = program
