@@ -34,7 +34,7 @@ program
 
 program
   .command('readme')
-  .description("Guld SDK readme generator. Uses package.json, .travis.yml, and pre-existing README.md files to generate guld-style README.md files like this project's")
+  .description("Readme generator. Uses package.json, .travis.yml, and pre-existing README.md files to generate guld-style README.md files like this project's")
   .option('-n --name <package-name>', 'The package name to operate on.')
   .action(async (options) => {
     if (options.name && typeof options.name === 'string') process.chdir(guldSDK.getPath(options.name))
@@ -51,7 +51,7 @@ program
 
 program
   .command('version [vtype]')
-  .description('Guld SDK semantic version manager for packages.')
+  .description('Semantic version manager for packages.')
   .option('-n --name <package-name>', 'The package name to operate on.')
   .action(async (vtype, options) => {
     if (options.name && typeof options.name === 'string') process.chdir(guldSDK.getPath(options.name))
@@ -66,6 +66,24 @@ program
     await guldSDK.version(guser, pkg.name, vtype)
     var ver = (await guldSDK.readThenClose(`${guldSDK.getPath(pkg.name)}/package.json`, 'json')).version
     console.log(`Updated version for ${options.name} to ${ver}.`)
+  })
+
+program
+  .command('publish')
+  .description('Publish a package to npm and the blocktree both.')
+  .option('-n --name <package-name>', 'The package name to operate on.')
+  .action(async (vtype, options) => {
+    if (options.name && typeof options.name === 'string') process.chdir(guldSDK.getPath(options.name))
+    else options.name = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
+    if (options.name === '') {
+      console.log(`Invalid package-name ${options.name}`)
+      process.exit(1)
+    }
+    fs = fs || await getFS()
+    var guser = await getName()
+    var pkg = await guldSDK.readThenClose('package.json', 'json')
+    await guldSDK.publish(guser, pkg.name)
+    console.log(`Published ${options.name} at ${pkg.version}.`)
   })
 
 program
