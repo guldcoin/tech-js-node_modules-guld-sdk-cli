@@ -1,6 +1,6 @@
 {
   "name": "guld-sdk-cli",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "Software Developer Kit for guld JS packages.",
   "bin": {
     "guld-sdk": "cli.js"
