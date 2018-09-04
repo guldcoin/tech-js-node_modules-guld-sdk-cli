@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^2.17.1",
-    "guld-fs": "^1.3.2",
+    "guld-fs": "^1.3.3",
     "guld-user": "^0.5.11"
   },
   "devDependencies": {

@@ -20,16 +20,16 @@ program
   .description('Create or update a JS package, including package.json, travis, webpack, and more config files.')
   .option('-n --name <package-name>', 'The package name to operate on.')
   .action(async (options) => {
-    if (options.name && typeof options.name === 'string') process.chdir(guldSDK.getPath(options.name))
-    else options.name = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
-    if (options.name === '') {
-      console.log(`Invalid package-name ${options.name}`)
+    fs = fs || await getFS()
+    var pkg = typeof options.name === 'string' ? await guldSDK.gogetpkg({ name: options.name }) : await guldSDK.gogetpkg()
+    if (typeof pkg.name !== 'string' || pkg.name.length === 0) {
+      console.log(`Invalid package-name ${pkg.name}`)
       process.exit(1)
     }
     fs = fs || await getFS()
     var guser = await getName()
-    await guldSDK.init(guser, options.name)
-    console.log(`Initialized ${options.name}`)
+    await guldSDK.init(guser, pkg.name)
+    console.log(`Initialized ${pkg.name}`)
   })
 
 program
@@ -37,16 +37,14 @@ program
   .description("Readme generator. Uses package.json, .travis.yml, and pre-existing README.md files to generate guld-style README.md files like this project's")
   .option('-n --name <package-name>', 'The package name to operate on.')
   .action(async (options) => {
-    if (options.name && typeof options.name === 'string') process.chdir(guldSDK.getPath(options.name))
-    else options.name = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
-    if (options.name === '') {
-      console.log(`Invalid package-name ${options.name}`)
+    var pkg = typeof options.name === 'string' ? await guldSDK.gogetpkg({ name: options.name }) : await guldSDK.gogetpkg()
+    if (typeof pkg.name !== 'string' || pkg.name.length === 0) {
+      console.log(`Invalid package-name ${pkg.name}`)
       process.exit(1)
     }
     fs = fs || await getFS()
-    var pkg = await guldSDK.readThenClose('package.json', 'json')
     await fs.writeFile('README.md', await guldSDK.genReadme(pkg))
-    console.log(`Created README.md for ${options.name}`)
+    console.log(`Created README.md for ${pkg.name}`)
   })
 
 program
@@ -54,18 +52,16 @@ program
   .description('Semantic version manager for packages.')
   .option('-n --name <package-name>', 'The package name to operate on.')
   .action(async (vtype, options) => {
-    if (options.name && typeof options.name === 'string') process.chdir(guldSDK.getPath(options.name))
-    else options.name = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
-    if (options.name === '') {
-      console.log(`Invalid package-name ${options.name}`)
+    fs = fs || await getFS()
+    var pkg = typeof options.name === 'string' ? await guldSDK.gogetpkg({ name: options.name }) : await guldSDK.gogetpkg()
+    if (typeof pkg.name !== 'string' || pkg.name.length === 0) {
+      console.log(`Invalid package-name ${pkg.name}`)
       process.exit(1)
     }
-    fs = fs || await getFS()
     var guser = await getName()
-    var pkg = await guldSDK.readThenClose('package.json', 'json')
-    await guldSDK.version(guser, pkg.name, vtype)
+    await guldSDK.version(guser, pkg, vtype)
     var ver = (await guldSDK.readThenClose(`${guldSDK.getPath(pkg.name)}/package.json`, 'json')).version
-    console.log(`Updated version for ${options.name} to ${ver}.`)
+    console.log(`Updated version for ${pkg.name} to ${ver}.`)
   })
 
 program
@@ -73,16 +69,14 @@ program
   .description('Publish a package to npm and the blocktree both.')
   .option('-n --name <package-name>', 'The package name to operate on.')
   .action(async (vtype, options) => {
-    if (options.name && typeof options.name === 'string') process.chdir(guldSDK.getPath(options.name))
-    else options.name = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
-    if (options.name === '') {
-      console.log(`Invalid package-name ${options.name}`)
+    var pkg = typeof options.name === 'string' ? await guldSDK.gogetpkg({ name: options.name }) : await guldSDK.gogetpkg()
+    if (pkg.name === '') {
+      console.log(`Invalid package-name ${pkg.name}`)
       process.exit(1)
     }
     fs = fs || await getFS()
     var guser = await getName()
-    var pkg = await guldSDK.readThenClose('package.json', 'json')
-    await guldSDK.publish(guser, pkg.name)
+    await guldSDK.publish(guser, pkg)
     console.log(`Published ${options.name} at ${pkg.version}.`)
   })
 
@@ -91,14 +85,13 @@ program
   .description('Upgrade dependencies for a package.')
   .option('-n --name <package-name>', 'The package name to operate on.')
   .action(async (options) => {
-    if (options.name && typeof options.name === 'string') process.chdir(guldSDK.getPath(options.name))
-    else options.name = process.cwd().replace(guldSDK.getPath(''), '').replace('/', '')
-    if (options.name === '') {
-      console.log(`Invalid package-name ${options.name}`)
+    var pkg = typeof options.name === 'string' ? await guldSDK.gogetpkg({ name: options.name }) : await guldSDK.gogetpkg()
+    if (typeof pkg.name !== 'string' || pkg.name.length === 0) {
+      console.log(`Invalid package-name ${pkg.name}`)
       process.exit(1)
     }
-    await guldSDK.upgrade(options.name)
-    console.log(`Updated dependencies for ${options.name}.`)
+    await guldSDK.upgrade({ name: pkg.name })
+    console.log(`Updated dependencies for ${pkg.name}.`)
   })
 
 /* eslint-enable no-console */
