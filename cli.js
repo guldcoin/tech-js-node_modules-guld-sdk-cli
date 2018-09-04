@@ -78,7 +78,7 @@ program
     fs = fs || await getFS()
     var guser = await getName()
     await guldSDK.publish(guser, pkg)
-    console.log(`Published ${options.name} at ${pkg.version}.`)
+    console.log(`Published ${pkg.name} at ${pkg.version}.`)
   })
 
 program
