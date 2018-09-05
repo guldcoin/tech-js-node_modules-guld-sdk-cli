@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 const program = require('commander')
-const thispkg = require(`${__dirname}/package.json`)
 const { getFS } = require('guld-fs')
 const { getName } = require('guld-user')
 const guldSDK = require('guld-sdk')
 const runCLI = require('guld-cli-run')
+const thispkg = require(`${__dirname}/package.json`)
 var fs
 
 /* eslint-disable no-console */
@@ -52,7 +52,7 @@ program
   .command('version [vtype]')
   .description('Semantic version manager for packages.')
   .option('-n --name <package-name>', 'The package name to operate on.')
-  .action(async (vtype, options) => {
+  .action(async (vtype = 'patch', options) => {
     fs = fs || await getFS()
     var pkg = typeof options.name === 'string' ? await guldSDK.gogetpkg({ name: options.name }) : await guldSDK.gogetpkg()
     if (typeof pkg.name !== 'string' || pkg.name.length === 0) {
