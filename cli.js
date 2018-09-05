@@ -82,6 +82,22 @@ program
   })
 
 program
+  .command('deprecate')
+  .description('Deprecate a package in both npm and the blocktree.')
+  .option('-n --name <package-name>', 'The package name to operate on.')
+  .action(async (options) => {
+    var pkg = typeof options.name === 'string' ? await guldSDK.gogetpkg({ name: options.name }) : await guldSDK.gogetpkg()
+    if (pkg.name === '') {
+      console.log(`Invalid package-name ${pkg.name}`)
+      process.exit(1)
+    }
+    fs = fs || await getFS()
+    var guser = await getName()
+    await guldSDK.deprecate(guser, pkg)
+    console.log(`Deprecated ${pkg.name}.`)
+  })
+
+program
   .command('upgrade')
   .description('Upgrade dependencies for a package.')
   .option('-n --name <package-name>', 'The package name to operate on.')
